@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brat Generator 💅 - 3D Motion</title>
+    <title>Brat Generator 💅 - Mobile Fix</title>
     <!--
     ═══════════════════════════════════════════════════════════════
-    BRAT GENERATOR PREMIUM v3.5
+    BRAT GENERATOR PREMIUM v4.0
     ═══════════════════════════════════════════════════════════════
-    UPDATES (v3.5):
-    • Removed Live Badge: Tampilan canvas lebih bersih tanpa overlay teks.
-    • 3D Motion Engine: Efek animasi "Floating" (naik-turun + rotasi halus).
-    • Dynamic Shadow: Bayangan bergerak sesuai posisi teks (efek kedalaman).
-    • Real Play/Pause: Animasi berhenti total saat pause.
+    UPDATES (v4.0):
+    • Mobile Header Fix: Header tidak lagi 'fixed' (melayang) di mobile,
+      melainkan 'absolute' agar bisa di-scroll dan tidak menutupi konten.
+    • Responsive Spacing: Padding container disesuaikan agar header
+      tidak menabrak konten utama pada layar kecil.
+    • Compact UI: Ukuran elemen header sedikit diperkecil di mobile.
     ═══════════════════════════════════════════════════════════════
     -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,9 +35,9 @@
             --radius-md: 12px;
             --radius-lg: 16px;
             --radius-xl: 24px;
-            --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-base: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-slow: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: 0.2s cubic-bezier(0.2, 0, 0, 1);
+            --transition-base: 0.3s cubic-bezier(0.2, 0, 0, 1);
+            --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
         /* Theme: Classic Brat */
@@ -53,6 +54,7 @@
             --shadow-lg: 0 12px 48px rgba(138, 206, 0, 0.25);
             --canvas-bg: #8ACE00;
             --canvas-text: #000000;
+            --theme-indicator: #8ACE00;
         }
 
         /* Theme: Midnight Glass */
@@ -69,6 +71,7 @@
             --shadow-lg: 0 16px 64px rgba(0, 0, 0, 0.7);
             --canvas-bg: #1c1c1e;
             --canvas-text: #ffffff;
+            --theme-indicator: #5e5ce6;
         }
 
         /* Theme: Sunset Neon */
@@ -85,6 +88,7 @@
             --shadow-lg: 0 12px 48px rgba(255, 0, 110, 0.5);
             --canvas-bg: #ff006e;
             --canvas-text: #ffffff;
+            --theme-indicator: #ffbe0b;
         }
 
         /* ═══════════════════════════════════════
@@ -97,7 +101,7 @@
             background: var(--bg);
             color: var(--text);
             min-height: 100vh;
-            transition: background var(--transition-slow), color var(--transition-slow);
+            transition: background var(--transition-base), color var(--transition-base);
             overflow-x: hidden;
             position: relative;
         }
@@ -109,7 +113,7 @@
             top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle at 20% 50%, var(--accent) 0%, transparent 50%),
                         radial-gradient(circle at 80% 80%, var(--accent-hover) 0%, transparent 50%);
-            opacity: 0.1;
+            opacity: 0.15;
             z-index: 0;
             animation: gradientShift 20s ease-in-out infinite;
             pointer-events: none;
@@ -126,33 +130,93 @@
         ═══════════════════════════════════════ */
         .header {
             position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-            padding: 1rem 2rem;
-            backdrop-filter: blur(20px);
-            background: rgba(255, 255, 255, 0.05);
-            border-bottom: 1px solid var(--border);
+            padding: 1.5rem 2rem;
+            pointer-events: none;
+            transition: all 0.3s ease;
         }
 
         .header-content {
             max-width: 1200px; margin: 0 auto;
             display: flex; justify-content: space-between; align-items: center;
+            pointer-events: auto;
         }
 
-        .logo { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.02em; display: flex; align-items: center; gap: 0.5rem; }
+        .logo {
+            font-size: 1.5rem; font-weight: 900; letter-spacing: -0.03em;
+            display: flex; align-items: center; gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            padding: 0.5rem 1rem;
+            border-radius: 100px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
 
+        /* PREMIUM THEME SWITCHER */
         .theme-switcher {
-            display: flex; gap: 0.5rem; background: var(--surface);
-            padding: 0.25rem; border-radius: var(--radius-lg); border: 1px solid var(--border);
+            display: flex;
+            background: rgba(20, 20, 20, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 4px;
+            border-radius: 100px;
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        [data-theme="midnight-glass"] .theme-switcher {
+            background: rgba(255, 255, 255, 0.05);
         }
 
         .theme-btn {
-            padding: 0.5rem 0.75rem; border: none; background: transparent;
-            color: var(--text-muted); font-size: 0.875rem; font-weight: 600;
-            border-radius: var(--radius-md); cursor: pointer;
-            transition: all var(--transition-fast); font-family: var(--font-base);
+            position: relative;
+            padding: 0.6rem 1.2rem;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            font-weight: 600;
+            border-radius: 100px;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-family: var(--font-base);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            overflow: hidden;
         }
 
-        .theme-btn:hover { background: var(--surface-elevated); color: var(--text); }
-        .theme-btn.active { background: var(--accent); color: #ffffff; }
+        .theme-btn:hover {
+            color: var(--text);
+            background: rgba(128, 128, 128, 0.05);
+        }
+
+        .theme-btn.active {
+            background: var(--surface);
+            color: var(--text);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+
+        .theme-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: currentColor;
+            opacity: 0.3;
+            transition: all var(--transition-bounce);
+            box-shadow: 0 0 0 rgba(0,0,0,0);
+        }
+
+        .theme-btn[data-theme="classic-brat"] .theme-dot { background-color: #8ACE00; }
+        .theme-btn[data-theme="midnight-glass"] .theme-dot { background-color: #5e5ce6; }
+        .theme-btn[data-theme="sunset-neon"] .theme-dot { background-color: #ff006e; }
+
+        .theme-btn.active .theme-dot {
+            opacity: 1;
+            transform: scale(1.2);
+            box-shadow: 0 0 10px currentColor;
+        }
 
         /* ═══════════════════════════════════════
            MAIN CONTAINER
@@ -160,12 +224,12 @@
         .container {
             position: relative; z-index: 1;
             max-width: 1000px; margin: 0 auto;
-            padding: 6rem 2rem 2rem; min-height: 100vh;
+            padding: 8rem 2rem 2rem; min-height: 100vh;
         }
 
         .main-card {
             background: var(--surface); border-radius: var(--radius-xl);
-            padding: 2.5rem; box-shadow: var(--shadow); border: 1px solid var(--border);
+            padding: 3rem; box-shadow: var(--shadow); border: 1px solid var(--border);
             backdrop-filter: blur(20px);
             animation: cardEnter 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -175,32 +239,33 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .card-header { text-align: center; margin-bottom: 2rem; }
+        .card-header { text-align: center; margin-bottom: 3rem; }
         .card-title {
-            font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 0.5rem;
+            font-size: 3rem; font-weight: 900; letter-spacing: -0.04em; margin-bottom: 0.5rem;
             background: linear-gradient(135deg, var(--text), var(--accent));
             -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
         }
-        .card-subtitle { font-size: 1rem; color: var(--text-muted); font-weight: 500; }
+        .card-subtitle { font-size: 1.125rem; color: var(--text-muted); font-weight: 500; }
 
         /* ═══════════════════════════════════════
            FORM SECTIONS
         ═══════════════════════════════════════ */
         .form-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; margin-bottom: 2rem;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-bottom: 2rem;
         }
 
         .form-section { display: flex; flex-direction: column; gap: 1.5rem; }
-        .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+        .form-group { display: flex; flex-direction: column; gap: 0.6rem; }
         
         .form-label {
-            font-size: 0.875rem; font-weight: 600; color: var(--text);
+            font-size: 0.875rem; font-weight: 700; color: var(--text);
             display: flex; align-items: center; gap: 0.5rem;
             justify-content: space-between;
+            text-transform: uppercase; letter-spacing: 0.05em;
         }
 
         .form-input {
-            padding: 0.875rem 1rem; background: var(--surface-elevated);
+            padding: 1rem 1.2rem; background: var(--surface-elevated);
             border: 2px solid var(--border); border-radius: var(--radius-md);
             color: var(--text); font-size: 1rem; font-family: var(--font-base);
             transition: all var(--transition-base); outline: none;
@@ -209,96 +274,59 @@
         
         textarea.form-input {
             resize: vertical;
-            min-height: 80px;
+            min-height: 100px;
             line-height: 1.5;
         }
 
         .form-input:focus {
             border-color: var(--accent); box-shadow: 0 0 0 4px rgba(138, 206, 0, 0.1);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
         }
 
         /* File Upload Styling */
         .file-upload-wrapper {
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            gap: 0.5rem;
+            position: relative; overflow: hidden; display: flex; gap: 0.5rem;
         }
 
         .file-upload-btn {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            padding: 0.75rem;
-            border: 2px dashed var(--border);
-            border-radius: var(--radius-md);
-            background: var(--surface-elevated);
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: all var(--transition-base);
-            font-weight: 600;
-            font-size: 0.875rem;
+            flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            padding: 0.75rem; border: 2px dashed var(--border); border-radius: var(--radius-md);
+            background: var(--surface-elevated); color: var(--text-muted); cursor: pointer;
+            transition: all var(--transition-base); font-weight: 600; font-size: 0.875rem;
         }
 
         .file-upload-btn:hover {
-            border-color: var(--accent);
-            color: var(--text);
-            background: var(--surface);
+            border-color: var(--accent); color: var(--text); background: var(--surface);
         }
 
         .file-upload-btn.active {
-            border-style: solid;
-            border-color: var(--accent);
-            background: rgba(138, 206, 0, 0.1);
-            color: var(--text);
+            border-style: solid; border-color: var(--accent); background: rgba(138, 206, 0, 0.1); color: var(--text);
         }
 
         .file-input-hidden {
-            position: absolute;
-            left: 0;
-            top: 0;
-            opacity: 0;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
+            position: absolute; left: 0; top: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer;
         }
 
         .reset-font-btn {
-            padding: 0.75rem;
-            border: 2px solid var(--border);
-            border-radius: var(--radius-md);
-            background: var(--surface-elevated);
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: all var(--transition-fast);
-            display: none;
+            padding: 0.75rem; border: 2px solid var(--border); border-radius: var(--radius-md);
+            background: var(--surface-elevated); color: var(--text-muted); cursor: pointer;
+            transition: all var(--transition-fast); display: none;
         }
 
         .reset-font-btn:hover {
-            background: #ef4444;
-            color: white;
-            border-color: #ef4444;
+            background: #ef4444; color: white; border-color: #ef4444;
         }
 
-        .reset-font-btn.show {
-            display: block;
-        }
-
+        .reset-font-btn.show { display: block; }
 
         /* Format Toggle Buttons */
-        .format-toggles {
-            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem;
-        }
+        .format-toggles { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; }
 
         .format-btn {
-            padding: 0.75rem; border: 2px solid var(--border);
-            background: var(--surface-elevated); border-radius: var(--radius-md);
-            color: var(--text-muted); cursor: pointer; font-weight: 600;
-            transition: all var(--transition-fast); display: flex; align-items: center;
-            justify-content: center; gap: 0.5rem;
+            padding: 0.75rem; border: 2px solid var(--border); background: var(--surface-elevated);
+            border-radius: var(--radius-md); color: var(--text-muted); cursor: pointer;
+            font-weight: 600; transition: all var(--transition-fast); display: flex;
+            align-items: center; justify-content: center; gap: 0.5rem;
         }
 
         .format-btn:hover { border-color: var(--accent); color: var(--text); }
@@ -338,14 +366,16 @@
         ═══════════════════════════════════════ */
         .preview-section {
             background: var(--surface-elevated); border-radius: var(--radius-lg);
-            padding: 1.5rem; border: 2px solid var(--border); position: relative;
+            padding: 2rem; border: 2px solid var(--border); position: relative;
         }
 
         .preview-header {
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;
         }
 
-        .preview-title { font-size: 1.125rem; font-weight: 700; }
+        .preview-title { font-size: 1.25rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
+        
+        .preview-controls { display: flex; gap: 0.5rem; }
 
         .animation-toggle {
             padding: 0.5rem 1rem; background: var(--surface); border: 1px solid var(--border);
@@ -374,7 +404,6 @@
 
         #previewCanvas {
             width: 100%; height: 100%; object-fit: contain;
-            /* Canvas pulse dihapus, diganti 3D motion render internal */
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -382,18 +411,10 @@
 
         /* Overlay effect when paused (Dimming) */
         .preview-canvas-wrapper::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: rgba(0,0,0,0);
-            pointer-events: none;
-            transition: background 0.3s ease;
-            z-index: 5;
+            content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0);
+            pointer-events: none; transition: background 0.3s ease; z-index: 5;
         }
-
-        .preview-canvas-wrapper.paused::after {
-            background: rgba(0,0,0,0.25); /* Dim content slightly */
-        }
+        .preview-canvas-wrapper.paused::after { background: rgba(0,0,0,0.25); }
 
         /* ═══════════════════════════════════════
            BUTTONS
@@ -405,7 +426,6 @@
             display: flex; align-items: center; justify-content: center; gap: 0.5rem;
             position: relative; overflow: hidden;
         }
-
         .btn-primary { background: var(--accent); color: #ffffff; box-shadow: var(--shadow); }
         .btn-primary:hover { background: var(--accent-hover); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
         .btn-secondary { background: var(--surface-elevated); color: var(--text); border: 2px solid var(--border); }
@@ -440,13 +460,42 @@
         @media (max-width: 900px) {
             .form-grid { grid-template-columns: 1fr; gap: 2rem; }
             .form-grid .form-section:nth-child(2) { order: -1; }
+            .header-content { flex-direction: column; gap: 1rem; }
         }
 
         @media (max-width: 600px) {
-            .container { padding: 5rem 1rem 1rem; }
-            .card-title { font-size: 2rem; }
+            /* MOBILE FIXES */
+            .header {
+                position: absolute; /* Allows scrolling away */
+                padding: 1rem;
+                background: rgba(255, 255, 255, 0.02); /* Subtle bg just in case */
+            }
+
+            .header-content {
+                gap: 0.75rem;
+            }
+
+            .logo {
+                font-size: 1.25rem;
+                padding: 0.4rem 0.8rem;
+            }
+
+            .theme-switcher {
+                padding: 3px;
+            }
+
+            .theme-btn {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.8rem;
+            }
+
+            .container { 
+                padding: 10rem 1rem 2rem; /* Increased top padding so header doesn't overlap */
+            }
+
+            .card-title { font-size: 2.5rem; }
             .format-toggles { grid-template-columns: 1fr; }
-            .theme-switcher { display: none; }
+            .logo { margin-bottom: 0; }
         }
     </style>
 </head>
@@ -457,10 +506,20 @@
             <div class="logo">
                 <span>Brat Generator</span> <span>💅</span>
             </div>
+            <!-- Premium Theme Switcher -->
             <div class="theme-switcher">
-                <button class="theme-btn active" data-theme="classic-brat">Classic</button>
-                <button class="theme-btn" data-theme="midnight-glass">Midnight</button>
-                <button class="theme-btn" data-theme="sunset-neon">Sunset</button>
+                <button class="theme-btn active" data-theme="classic-brat">
+                    <span class="theme-dot"></span>
+                    Classic
+                </button>
+                <button class="theme-btn" data-theme="midnight-glass">
+                    <span class="theme-dot"></span>
+                    Midnight
+                </button>
+                <button class="theme-btn" data-theme="sunset-neon">
+                    <span class="theme-dot"></span>
+                    Sunset
+                </button>
             </div>
         </div>
     </header>
@@ -470,7 +529,7 @@
         <div class="main-card">
             <div class="card-header">
                 <h1 class="card-title">Brat Generator</h1>
-                <p class="card-subtitle">Buat stiker aesthetic (3D Motion Support) ✨</p>
+                <p class="card-subtitle">Buat stiker aesthetic dengan gaya premium ✨</p>
             </div>
 
             <div class="form-grid">
@@ -486,7 +545,7 @@
                     <div class="form-group">
                         <label class="form-label">
                             <span>🔤 Gaya Font</span>
-                            <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 400;">(TTF, OTF, WOFF)</span>
+                            <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 400; text-transform: none;">(TTF, OTF, WOFF)</span>
                         </label>
                         <div class="file-upload-wrapper">
                             <div class="file-upload-btn" id="fontUploadBtn">
@@ -544,16 +603,18 @@
                     <div class="preview-section">
                         <div class="preview-header">
                             <h2 class="preview-title">👁️ Live Preview</h2>
-                            <button class="animation-toggle" id="animToggle">
-                                <span id="animIcon">⏸️</span> <span id="animText">Pause</span>
-                            </button>
+                            <div class="preview-controls">
+                                <button class="animation-toggle" id="animToggle" title="Play/Pause Loop">
+                                    <span id="animIcon">⏸️</span> <span id="animText">Pause</span>
+                                </button>
+                            </div>
                         </div>
                         <!-- Canvas Wrapper -->
                         <div class="preview-canvas-wrapper" id="canvasWrapper">
                             <canvas id="previewCanvas"></canvas>
                         </div>
-                        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem; text-align: center;">
-                            *Efek 3D hanya visual preview. Download akan menyimpan posisi saat itu.
+                        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.8rem; text-align: center;">
+                            <span style="color: var(--accent);">*Hasil download akan selalu lurus dan rapi.</span>
                         </p>
                     </div>
 
@@ -597,7 +658,8 @@
             currentTheme: 'classic-brat',
             format: 'landscape',
             customFont: null,
-            time: 0
+            time: 0,
+            // Removed autoPauseAt
         };
 
         // ═══════════════════════════════════════════════════════════════
@@ -620,6 +682,7 @@
             animToggle: document.getElementById('animToggle'),
             animText: document.getElementById('animText'),
             animIcon: document.getElementById('animIcon'),
+            // Removed replayBtn
             themeBtns: document.querySelectorAll('.theme-btn')
         };
         
@@ -630,7 +693,7 @@
         // ═══════════════════════════════════════════════════════════════
         function animate() {
             if (!state.animationPaused) {
-                state.time += 0.03; // Speed of animation
+                state.time += 0.04; 
             }
             
             render(state.time);
@@ -648,7 +711,8 @@
             els.wrapper.style.aspectRatio = dim.ratio;
         }
 
-        function drawContentToContext(targetCtx, width, height, isTransparent = false, time = 0) {
+        // Added "disable3D" parameter for straight exports
+        function drawContentToContext(targetCtx, width, height, isTransparent = false, time = 0, disable3D = false) {
             // Clear
             if (isTransparent) {
                 targetCtx.clearRect(0, 0, width, height);
@@ -657,29 +721,31 @@
                 targetCtx.fillRect(0, 0, width, height);
             }
 
-            // Calculate 3D Motion offsets (Sine waves)
-            // Only apply animation if not transparent (downloading) OR strictly for preview fun
-            // We apply animation to preview, but usually static for download unless desired
-            // Let's apply it to both so what you see is what you get.
-            
-            const offsetY = Math.sin(time) * (height * 0.02); // Float up and down
-            const rotateRad = Math.cos(time * 0.5) * 0.03; // Slight rotation wobble
-            const scale = 1 + (Math.sin(time * 0.8) * 0.01); // Subtle breathing
+            // Calculate 3D Motion offsets (Sine waves) or reset to 0 if disabled
+            let offsetY = 0;
+            let rotateRad = 0;
+            let scale = 1;
+
+            if (!disable3D) {
+                offsetY = Math.sin(time) * (height * 0.02); 
+                rotateRad = Math.cos(time * 0.5) * 0.03; 
+                scale = 1 + (Math.sin(time * 0.8) * 0.01); 
+            }
 
             // Prepare Text
             const rawText = state.text || 'brat';
             const lines = rawText.split('\n');
             const textColor = isTransparent ? state.color : state.textColor;
             
-            targetCtx.save(); // Save state before transforming
+            targetCtx.save(); 
 
-            // Center of canvas for rotation
+            // Center transform
             targetCtx.translate(width / 2, height / 2);
             targetCtx.rotate(rotateRad);
             targetCtx.scale(scale, scale);
             targetCtx.translate(-width / 2, -height / 2);
 
-            // Determine Font Family
+            // Font
             let fontFamily;
             if (state.customFont) {
                 fontFamily = state.customFont;
@@ -687,7 +753,7 @@
                 fontFamily = state.currentTheme === 'classic-brat' ? 'Arial Narrow, Arial Black' : 'Inter';
             }
             
-            // ─── SCALING LOGIC ───
+            // Scaling
             const baseFontSize = 100; 
             targetCtx.font = `900 ${baseFontSize}px ${fontFamily}, sans-serif`;
             
@@ -712,23 +778,29 @@
             targetCtx.textAlign = 'center';
             targetCtx.textBaseline = 'middle';
 
-            // Calculate Y base
+            // Y Calc
             const totalBlockHeight = lines.length * finalLineHeight;
             let currentY = (height / 2) - (totalBlockHeight / 2) + (finalLineHeight / 2);
-            
-            // Apply Float Offset to Y
             currentY += offsetY;
 
-            // ─── SHADOW LOGIC (3D Effect) ───
-            // Shadow moves opposite to text movement to create depth
+            // Shadow Logic
             if (!isTransparent) {
-                const shadowOffsetX = Math.sin(time) * (width * 0.005);
-                const shadowOffsetY = Math.cos(time) * (width * 0.005) + (width * 0.005);
-                
-                targetCtx.shadowColor = 'rgba(0, 0, 0, 0.2)';
-                targetCtx.shadowBlur = width * 0.02;
-                targetCtx.shadowOffsetX = shadowOffsetX;
-                targetCtx.shadowOffsetY = shadowOffsetY;
+                if (!disable3D) {
+                    // Dynamic 3D Shadow
+                    const shadowOffsetX = Math.sin(time) * (width * 0.005);
+                    const shadowOffsetY = Math.cos(time) * (width * 0.005) + (width * 0.005);
+                    
+                    targetCtx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+                    targetCtx.shadowBlur = width * 0.02;
+                    targetCtx.shadowOffsetX = shadowOffsetX;
+                    targetCtx.shadowOffsetY = shadowOffsetY;
+                } else {
+                    // Static Clean Shadow for Download
+                    targetCtx.shadowColor = 'rgba(0, 0, 0, 0.15)';
+                    targetCtx.shadowBlur = width * 0.015;
+                    targetCtx.shadowOffsetX = width * 0.003;
+                    targetCtx.shadowOffsetY = width * 0.003;
+                }
             } else {
                 targetCtx.shadowColor = 'transparent';
             }
@@ -740,24 +812,24 @@
                 currentY += finalLineHeight;
             });
             
-            targetCtx.restore(); // Restore original context state (remove rotation/scale)
+            targetCtx.restore();
         }
 
         function render(time = 0) {
-            drawContentToContext(ctx, els.canvas.width, els.canvas.height, false, time);
+            // Preview selalu allow 3D effects (disable3D = false)
+            drawContentToContext(ctx, els.canvas.width, els.canvas.height, false, time, false);
         }
 
         function downloadImage() {
             const bgType = document.querySelector('input[name="bgType"]:checked').value;
             const isTransparent = bgType === 'transparent';
-
             const exportCanvas = document.createElement('canvas');
             exportCanvas.width = els.canvas.width;
             exportCanvas.height = els.canvas.height;
             const exCtx = exportCanvas.getContext('2d');
-
-            // Capture the exact current animation frame state
-            drawContentToContext(exCtx, exportCanvas.width, exportCanvas.height, isTransparent, state.time);
+            
+            // FORCE STRAIGHT EXPORT: pass time=0 and disable3D=true
+            drawContentToContext(exCtx, exportCanvas.width, exportCanvas.height, isTransparent, 0, true);
 
             const link = document.createElement('a');
             link.download = `brat-${state.format}-${Date.now()}.png`;
@@ -784,7 +856,6 @@
             state.currentTheme = themeName;
             els.themeBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.theme === themeName));
             updateTextColor();
-            // render(); handled by animate loop
         }
 
         function handleColorChange(hex) {
@@ -798,9 +869,7 @@
         // ═══════════════════════════════════════════════════════════════
         // EVENT LISTENERS
         // ═══════════════════════════════════════════════════════════════
-        els.input.addEventListener('input', (e) => {
-            state.text = e.target.value;
-        });
+        els.input.addEventListener('input', (e) => { state.text = e.target.value; });
 
         els.formatBtns.forEach(btn => {
             btn.addEventListener('click', () => {
@@ -820,13 +889,9 @@
         });
 
         els.colorPicker.addEventListener('input', (e) => handleColorChange(e.target.value));
-        els.colorHex.addEventListener('input', (e) => {
-            if (/^#[0-9A-Fa-f]{6}$/.test(e.target.value)) handleColorChange(e.target.value);
-        });
+        els.colorHex.addEventListener('input', (e) => { if (/^#[0-9A-Fa-f]{6}$/.test(e.target.value)) handleColorChange(e.target.value); });
 
-        els.themeBtns.forEach(btn => {
-            btn.addEventListener('click', () => applyTheme(btn.dataset.theme));
-        });
+        els.themeBtns.forEach(btn => { btn.addEventListener('click', () => applyTheme(btn.dataset.theme)); });
 
         els.generateBtn.addEventListener('click', () => {
             els.generateBtn.classList.add('btn-loading');
@@ -841,14 +906,16 @@
         els.downloadBtn.addEventListener('click', downloadImage);
 
         els.animToggle.addEventListener('click', () => {
+            // Reset auto-pause jika user manual
+            state.autoPauseAt = null; 
             state.animationPaused = !state.animationPaused;
             els.wrapper.classList.toggle('paused', state.animationPaused);
-            
             els.animIcon.textContent = state.animationPaused ? '▶️' : '⏸️';
             els.animText.textContent = state.animationPaused ? 'Resume' : 'Pause';
         });
+
+        // Removed Replay Event Listener
         
-        // Font handling code ...
         els.fontInput.addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (!file) return;
@@ -881,13 +948,9 @@
         }
         els.resetFontBtn.addEventListener('click', resetFont);
 
-        // ═══════════════════════════════════════════════════════════════
-        // INIT
-        // ═══════════════════════════════════════════════════════════════
         function init() {
             updateCanvasDimensions();
             updateTextColor();
-            // Start Animation Loop
             requestAnimationFrame(animate);
         }
 
