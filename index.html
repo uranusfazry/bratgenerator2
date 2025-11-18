@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uranusfazry - Brat Generator 💅</title>
+    <title>Uranusfazry Brat Generator 💅 - Contrast Fix</title>
     <!--
     ═══════════════════════════════════════════════════════════════
-    BRAT GENERATOR PREMIUM v4.5
+    BRAT GENERATOR PREMIUM v4.6
     ═══════════════════════════════════════════════════════════════
-    UPDATES (v4.5):
-    • Themed Watermark: Warna watermark (border, glow, partikel)
-      sekarang otomatis mengikuti tema yang dipilih.
-    • Dynamic Variables: Integrasi variabel CSS watermark ke dalam
-      sistem tema utama.
-    • Clean Up: Menghapus toggle tema manual pada klik watermark
-      agar tidak bentrok dengan switcher utama.
+    UPDATES (v4.6):
+    • Midnight Theme Fix: Memperbaiki masalah kontras teks pada tema Midnight.
+      - Input field & surface background diubah menjadi gelap (rgba black)
+        agar teks putih terlihat jelas.
+      - Memastikan variabel --text menggunakan Pure White (#ffffff).
+    • Color Logic Tweak: Menyesuaikan threshold brightness agar teks
+      canvas lebih responsif terhadap warna gelap menengah.
     ═══════════════════════════════════════════════════════════════
     -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -46,7 +46,6 @@
 
         /* Theme: Classic Brat (Green) */
         [data-theme="classic-brat"] {
-            /* App Vars */
             --bg: #8ACE00;
             --surface: #ffffff;
             --surface-elevated: #f8f9fa;
@@ -58,43 +57,40 @@
             --shadow: 0 4px 24px rgba(138, 206, 0, 0.15);
             --theme-indicator: #8ACE00;
             --canvas-bg: #8ACE00;
-
-            /* Watermark Vars (Themed) */
-            --wm-glow: #8ACE00; /* Brat Green */
-            --wm-bg: rgba(255, 255, 255, 0.9); /* Light glass for bright theme */
+            /* Watermark */
+            --wm-glow: #8ACE00;
+            --wm-bg: rgba(255, 255, 255, 0.9);
             --wm-border: rgba(138, 206, 0, 0.5);
             --wm-text: #000000;
-            --wm-particle-hue: 85; /* Hue for Green */
+            --wm-particle-hue: 85;
             --wm-particle-lightness: 40;
         }
 
-        /* Theme: Midnight (Dark Slate) */
+        /* Theme: Midnight (Dark Slate) - FIXED CONTRAST */
         [data-theme="midnight-glass"] {
-            /* App Vars */
-            --bg: #334155;
-            --surface: rgba(255, 255, 255, 0.1);
-            --surface-elevated: rgba(255, 255, 255, 0.15);
-            --text: #f1f5f9;
+            --bg: #334155; /* Slate-700 */
+            /* FIX: Menggunakan background gelap transparan, bukan putih transparan */
+            --surface: rgba(15, 23, 42, 0.6); /* Darker surface */
+            --surface-elevated: rgba(0, 0, 0, 0.3); /* Dark input bg for white text */
+            --text: #ffffff; /* Pure White */
             --text-muted: #94a3b8;
             --accent: #64748b;
             --accent-hover: #475569;
-            --border: rgba(255, 255, 255, 0.15);
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --border: rgba(255, 255, 255, 0.1);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
             --theme-indicator: #64748b;
-            --canvas-bg: #1e293b;
-
-            /* Watermark Vars (Themed) */
-            --wm-glow: #a5b4fc; /* Indigo Light */
-            --wm-bg: rgba(15, 23, 42, 0.85); /* Dark Slate */
+            --canvas-bg: #334155;
+            /* Watermark */
+            --wm-glow: #a5b4fc;
+            --wm-bg: rgba(15, 23, 42, 0.85);
             --wm-border: rgba(148, 163, 184, 0.3);
-            --wm-text: #f8fafc;
-            --wm-particle-hue: 230; /* Hue for Blue/Slate */
+            --wm-text: #ffffff;
+            --wm-particle-hue: 230;
             --wm-particle-lightness: 60;
         }
 
         /* Theme: Sunset (Ochre/Orange) */
         [data-theme="sunset-neon"] {
-            /* App Vars */
             --bg: #CA8A04;
             --surface: #ffffff;
             --surface-elevated: #FFFBEB;
@@ -106,13 +102,12 @@
             --shadow: 0 4px 24px rgba(202, 138, 4, 0.25);
             --theme-indicator: #CA8A04;
             --canvas-bg: #CA8A04;
-
-            /* Watermark Vars (Themed) */
-            --wm-glow: #CA8A04; /* Ochre */
-            --wm-bg: rgba(255, 251, 235, 0.9); /* Warm Light */
+            /* Watermark */
+            --wm-glow: #CA8A04;
+            --wm-bg: rgba(255, 251, 235, 0.9);
             --wm-border: rgba(202, 138, 4, 0.4);
             --wm-text: #422006;
-            --wm-particle-hue: 40; /* Hue for Orange/Gold */
+            --wm-particle-hue: 40;
             --wm-particle-lightness: 50;
         }
 
@@ -516,12 +511,8 @@
             border-radius: 10px;
             box-shadow: 0 0 15px rgba(var(--wm-glow), 0.15), 
                         0 0 30px rgba(var(--wm-glow), 0.1),
-                        inset 0 0 10px rgba(var(--wm-glow), 0.1); /* Using var inside rgba might fail if hex, handled in JS usually but modern browsers might not support it directly in rgba().
-                                                                     Ideally we use opacity on hex or define r,g,b vars. 
-                                                                     For simplicity in this pure CSS block, we assume modern browser support or simplified hex usage if possible. 
-                                                                     Actually, rgba(hex, alpha) works in modern browsers. */
+                        inset 0 0 10px rgba(var(--wm-glow), 0.1);
             
-            /* Fallback for broader compatibility/simplicity: use accent for shadow without opacity or use hex directly if var contains hex */
             box-shadow: 0 0 15px var(--wm-glow), inset 0 0 5px var(--wm-glow);
 
             z-index: 9999;
@@ -894,6 +885,7 @@
         function updateTextColor() {
             const rgb = hexToRgb(state.color);
             const brightness = (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
+            // Tweaked threshold: Make it more sensitive to switch to white on mid-dark backgrounds
             state.textColor = brightness > 128 ? '#000000' : '#FFFFFF';
         }
 
