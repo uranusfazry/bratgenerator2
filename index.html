@@ -3,22 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brat Generator 💅 - Mobile Fix</title>
+    <title>Uranusfazry - Brat Generator 💅</title>
     <!--
     ═══════════════════════════════════════════════════════════════
-    BRAT GENERATOR PREMIUM v4.0
+    BRAT GENERATOR PREMIUM v4.5
     ═══════════════════════════════════════════════════════════════
-    UPDATES (v4.0):
-    • Mobile Header Fix: Header tidak lagi 'fixed' (melayang) di mobile,
-      melainkan 'absolute' agar bisa di-scroll dan tidak menutupi konten.
-    • Responsive Spacing: Padding container disesuaikan agar header
-      tidak menabrak konten utama pada layar kecil.
-    • Compact UI: Ukuran elemen header sedikit diperkecil di mobile.
+    UPDATES (v4.5):
+    • Themed Watermark: Warna watermark (border, glow, partikel)
+      sekarang otomatis mengikuti tema yang dipilih.
+    • Dynamic Variables: Integrasi variabel CSS watermark ke dalam
+      sistem tema utama.
+    • Clean Up: Menghapus toggle tema manual pada klik watermark
+      agar tidak bentrok dengan switcher utama.
     ═══════════════════════════════════════════════════════════════
     -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Link Google Font untuk Watermark -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
     <style>
         *, *::before, *::after {
             margin: 0;
@@ -40,8 +44,9 @@
             --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        /* Theme: Classic Brat */
+        /* Theme: Classic Brat (Green) */
         [data-theme="classic-brat"] {
+            /* App Vars */
             --bg: #8ACE00;
             --surface: #ffffff;
             --surface-elevated: #f8f9fa;
@@ -51,44 +56,64 @@
             --accent-hover: #5CA000;
             --border: rgba(0, 0, 0, 0.08);
             --shadow: 0 4px 24px rgba(138, 206, 0, 0.15);
-            --shadow-lg: 0 12px 48px rgba(138, 206, 0, 0.25);
-            --canvas-bg: #8ACE00;
-            --canvas-text: #000000;
             --theme-indicator: #8ACE00;
+            --canvas-bg: #8ACE00;
+
+            /* Watermark Vars (Themed) */
+            --wm-glow: #8ACE00; /* Brat Green */
+            --wm-bg: rgba(255, 255, 255, 0.9); /* Light glass for bright theme */
+            --wm-border: rgba(138, 206, 0, 0.5);
+            --wm-text: #000000;
+            --wm-particle-hue: 85; /* Hue for Green */
+            --wm-particle-lightness: 40;
         }
 
-        /* Theme: Midnight Glass */
+        /* Theme: Midnight (Dark Slate) */
         [data-theme="midnight-glass"] {
-            --bg: #0a0a0f;
-            --surface: rgba(255, 255, 255, 0.05);
-            --surface-elevated: rgba(255, 255, 255, 0.08);
-            --text: #e8e8ea;
-            --text-muted: #8e8e93;
-            --accent: #5e5ce6;
-            --accent-hover: #7674f0;
-            --border: rgba(255, 255, 255, 0.12);
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-            --shadow-lg: 0 16px 64px rgba(0, 0, 0, 0.7);
-            --canvas-bg: #1c1c1e;
-            --canvas-text: #ffffff;
-            --theme-indicator: #5e5ce6;
+            /* App Vars */
+            --bg: #334155;
+            --surface: rgba(255, 255, 255, 0.1);
+            --surface-elevated: rgba(255, 255, 255, 0.15);
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --accent: #64748b;
+            --accent-hover: #475569;
+            --border: rgba(255, 255, 255, 0.15);
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            --theme-indicator: #64748b;
+            --canvas-bg: #1e293b;
+
+            /* Watermark Vars (Themed) */
+            --wm-glow: #a5b4fc; /* Indigo Light */
+            --wm-bg: rgba(15, 23, 42, 0.85); /* Dark Slate */
+            --wm-border: rgba(148, 163, 184, 0.3);
+            --wm-text: #f8fafc;
+            --wm-particle-hue: 230; /* Hue for Blue/Slate */
+            --wm-particle-lightness: 60;
         }
 
-        /* Theme: Sunset Neon */
+        /* Theme: Sunset (Ochre/Orange) */
         [data-theme="sunset-neon"] {
-            --bg: #ff006e;
-            --surface: #1a0014;
-            --surface-elevated: #2d0024;
-            --text: #fff0f7;
-            --text-muted: #d4a5c7;
-            --accent: #ffbe0b;
-            --accent-hover: #fb5607;
-            --border: rgba(255, 190, 11, 0.2);
-            --shadow: 0 4px 24px rgba(255, 0, 110, 0.3);
-            --shadow-lg: 0 12px 48px rgba(255, 0, 110, 0.5);
-            --canvas-bg: #ff006e;
-            --canvas-text: #ffffff;
-            --theme-indicator: #ffbe0b;
+            /* App Vars */
+            --bg: #CA8A04;
+            --surface: #ffffff;
+            --surface-elevated: #FFFBEB;
+            --text: #422006;
+            --text-muted: #92400e;
+            --accent: #A16207;
+            --accent-hover: #854d0e;
+            --border: rgba(161, 98, 7, 0.2);
+            --shadow: 0 4px 24px rgba(202, 138, 4, 0.25);
+            --theme-indicator: #CA8A04;
+            --canvas-bg: #CA8A04;
+
+            /* Watermark Vars (Themed) */
+            --wm-glow: #CA8A04; /* Ochre */
+            --wm-bg: rgba(255, 251, 235, 0.9); /* Warm Light */
+            --wm-border: rgba(202, 138, 4, 0.4);
+            --wm-text: #422006;
+            --wm-particle-hue: 40; /* Hue for Orange/Gold */
+            --wm-particle-lightness: 50;
         }
 
         /* ═══════════════════════════════════════
@@ -106,30 +131,23 @@
             position: relative;
         }
 
-        /* Animated background gradient */
+        /* Background Texture */
         body::before {
             content: '';
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 20% 50%, var(--accent) 0%, transparent 50%),
-                        radial-gradient(circle at 80% 80%, var(--accent-hover) 0%, transparent 50%);
-            opacity: 0.15;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            opacity: 0.4;
             z-index: 0;
-            animation: gradientShift 20s ease-in-out infinite;
             pointer-events: none;
-        }
-
-        @keyframes gradientShift {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(5%, -5%) scale(1.1); }
-            66% { transform: translate(-5%, 5%) scale(0.95); }
         }
 
         /* ═══════════════════════════════════════
            HEADER & COMPONENTS
         ═══════════════════════════════════════ */
         .header {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            position: absolute; 
+            top: 0; left: 0; right: 0; z-index: 100;
             padding: 1.5rem 2rem;
             pointer-events: none;
             transition: all 0.3s ease;
@@ -144,37 +162,41 @@
         .logo {
             font-size: 1.5rem; font-weight: 900; letter-spacing: -0.03em;
             display: flex; align-items: center; gap: 0.5rem;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(12px);
             padding: 0.5rem 1rem;
             border-radius: 100px;
-            border: 1px solid var(--border);
+            border: 1px solid rgba(255,255,255,0.3);
             box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            color: var(--text);
         }
 
         /* PREMIUM THEME SWITCHER */
         .theme-switcher {
             display: flex;
-            background: rgba(20, 20, 20, 0.05);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             padding: 4px;
             border-radius: 100px;
-            border: 1px solid var(--border);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
             position: relative;
+            gap: 2px;
         }
 
         [data-theme="midnight-glass"] .theme-switcher {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(0, 0, 0, 0.2);
+            border-color: rgba(255, 255, 255, 0.1);
         }
 
         .theme-btn {
             position: relative;
-            padding: 0.6rem 1.2rem;
+            padding: 0.5rem 1rem;
             border: none;
             background: transparent;
-            color: var(--text-muted);
+            color: var(--text);
+            opacity: 0.7;
             font-size: 0.875rem;
             font-weight: 600;
             border-radius: 100px;
@@ -184,39 +206,28 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            overflow: hidden;
         }
 
-        .theme-btn:hover {
-            color: var(--text);
-            background: rgba(128, 128, 128, 0.05);
-        }
+        .theme-btn:hover { opacity: 1; background: rgba(255, 255, 255, 0.1); }
 
         .theme-btn.active {
-            background: var(--surface);
-            color: var(--text);
-            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            opacity: 1;
+            background: #ffffff;
+            color: #000000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
+        [data-theme="midnight-glass"] .theme-btn.active { background: #ffffff; color: #000000; }
+
         .theme-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
+            width: 10px; height: 10px; border-radius: 50%;
             background-color: currentColor;
-            opacity: 0.3;
-            transition: all var(--transition-bounce);
-            box-shadow: 0 0 0 rgba(0,0,0,0);
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
         }
 
         .theme-btn[data-theme="classic-brat"] .theme-dot { background-color: #8ACE00; }
-        .theme-btn[data-theme="midnight-glass"] .theme-dot { background-color: #5e5ce6; }
-        .theme-btn[data-theme="sunset-neon"] .theme-dot { background-color: #ff006e; }
-
-        .theme-btn.active .theme-dot {
-            opacity: 1;
-            transform: scale(1.2);
-            box-shadow: 0 0 10px currentColor;
-        }
+        .theme-btn[data-theme="midnight-glass"] .theme-dot { background-color: #64748b; }
+        .theme-btn[data-theme="sunset-neon"] .theme-dot { background-color: #b45309; }
 
         /* ═══════════════════════════════════════
            MAIN CONTAINER
@@ -273,9 +284,7 @@
         }
         
         textarea.form-input {
-            resize: vertical;
-            min-height: 100px;
-            line-height: 1.5;
+            resize: vertical; min-height: 100px; line-height: 1.5;
         }
 
         .form-input:focus {
@@ -355,14 +364,17 @@
         /* Custom Color Picker */
         .color-picker-wrapper { display: flex; gap: 0.75rem; align-items: center; }
         .color-picker {
-            width: 60px; height: 44px; border: 2px solid var(--border);
+            width: 60px; height: 46px; border: 2px solid var(--border); padding: 0;
             border-radius: var(--radius-md); cursor: pointer; transition: all var(--transition-base);
+            background: none;
         }
         .color-picker:hover { transform: scale(1.05); }
-        .color-input { flex: 1; }
+        .color-input {
+            flex: 1; font-family: monospace; letter-spacing: 0.05em; font-weight: 600;
+        }
 
         /* ═══════════════════════════════════════
-           PREVIEW SECTION WITH ANIMATIONS
+           PREVIEW SECTION
         ═══════════════════════════════════════ */
         .preview-section {
             background: var(--surface-elevated); border-radius: var(--radius-lg);
@@ -409,7 +421,6 @@
 
         .preview-canvas-wrapper.paused::before { animation-play-state: paused; }
 
-        /* Overlay effect when paused (Dimming) */
         .preview-canvas-wrapper::after {
             content: ''; position: absolute; inset: 0; background: rgba(0,0,0,0);
             pointer-events: none; transition: background 0.3s ease; z-index: 5;
@@ -464,38 +475,106 @@
         }
 
         @media (max-width: 600px) {
-            /* MOBILE FIXES */
-            .header {
-                position: absolute; /* Allows scrolling away */
-                padding: 1rem;
-                background: rgba(255, 255, 255, 0.02); /* Subtle bg just in case */
-            }
-
-            .header-content {
-                gap: 0.75rem;
-            }
-
-            .logo {
-                font-size: 1.25rem;
-                padding: 0.4rem 0.8rem;
-            }
-
-            .theme-switcher {
-                padding: 3px;
-            }
-
-            .theme-btn {
-                padding: 0.5rem 0.8rem;
-                font-size: 0.8rem;
-            }
-
-            .container { 
-                padding: 10rem 1rem 2rem; /* Increased top padding so header doesn't overlap */
-            }
-
+            .header { position: absolute; padding: 1rem; background: transparent; }
+            .header-content { gap: 0.75rem; }
+            .logo { font-size: 1.25rem; padding: 0.4rem 0.8rem; }
+            .theme-switcher { padding: 3px; transform: scale(0.95); }
+            .theme-btn { padding: 0.5rem 0.8rem; font-size: 0.8rem; }
+            .container { padding: 10rem 1rem 2rem; }
             .card-title { font-size: 2.5rem; }
             .format-toggles { grid-template-columns: 1fr; }
             .logo { margin-bottom: 0; }
+        }
+        
+        /* ═══════════════════════════════════════
+           WATERMARK STYLES (THEMED)
+        ═══════════════════════════════════════ */
+        @keyframes slideUpFadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes logo3DFlip {
+            0% { transform: rotateY(0deg); filter: brightness(1); }
+            50% { transform: rotateY(180deg); filter: brightness(2) drop-shadow(0 0 8px var(--wm-glow)); }
+            100% { transform: rotateY(360deg); filter: brightness(1); }
+        }
+        
+        #futuristic-watermark {
+            position: fixed;
+            bottom: 25px;
+            left: 25px;
+            padding: 8px 15px;
+            min-width: 212px;
+            background: var(--wm-bg);
+            color: var(--wm-text);
+            font-family: 'Roboto Mono', monospace;
+            font-weight: 500;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid var(--wm-border);
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(var(--wm-glow), 0.15), 
+                        0 0 30px rgba(var(--wm-glow), 0.1),
+                        inset 0 0 10px rgba(var(--wm-glow), 0.1); /* Using var inside rgba might fail if hex, handled in JS usually but modern browsers might not support it directly in rgba().
+                                                                     Ideally we use opacity on hex or define r,g,b vars. 
+                                                                     For simplicity in this pure CSS block, we assume modern browser support or simplified hex usage if possible. 
+                                                                     Actually, rgba(hex, alpha) works in modern browsers. */
+            
+            /* Fallback for broader compatibility/simplicity: use accent for shadow without opacity or use hex directly if var contains hex */
+            box-shadow: 0 0 15px var(--wm-glow), inset 0 0 5px var(--wm-glow);
+
+            z-index: 9999;
+            cursor: pointer;
+            user-select: none;
+            overflow: hidden;
+            opacity: 0;
+            animation: slideUpFadeIn 1s ease-out 0.5s forwards;
+            transition: all 0.5s ease;
+        }
+        
+        #futuristic-watermark:hover {
+            transform: translateY(-5px) scale(1.03);
+            border-color: var(--wm-glow);
+            box-shadow: 0 0 25px var(--wm-glow);
+        }
+        
+        #particle-canvas {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none;
+        }
+
+        .f-content-wrapper {
+            position: relative; z-index: 2; display: flex; align-items: center; justify-content: center; min-height: 18px;
+        }
+
+        .f-content {
+            display: flex; align-items: center; gap: 10px; transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .f-content.hidden {
+            opacity: 0; pointer-events: none; position: absolute; transform: scale(0.9);
+        }
+
+        .f-logo-container {
+            width: 18px; height: 18px; transition: transform 0.4s ease; flex-shrink: 0;
+        }
+
+        .f-logo-container.reacting {
+            animation: logo3DFlip 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        
+        .f-logo-container svg {
+            width: 100%; height: 100%; stroke: var(--wm-glow); stroke-width: 8; transition: stroke 0.5s ease;
+        }
+        
+        #f-watermark-text, #f-follow-message { transition: color 0.5s ease; }
+
+        #f-watermark-text {
+            font-size: 12px; letter-spacing: 1px; text-transform: uppercase;
+        }
+        
+        #f-follow-message {
+            font-size: 11px; letter-spacing: 0.2px; font-weight: 700; text-align: center; white-space: nowrap;
         }
     </style>
 </head>
@@ -579,8 +658,8 @@
                         <label class="form-label"><span>🎨 Warna Preset</span></label>
                         <div class="color-presets">
                             <button class="color-preset active" style="background: #8ACE00" data-color="#8ACE00"></button>
-                            <button class="color-preset" style="background: #FF006E" data-color="#FF006E"></button>
-                            <button class="color-preset" style="background: #5E5CE6" data-color="#5E5CE6"></button>
+                            <button class="color-preset" style="background: #334155" data-color="#334155"></button>
+                            <button class="color-preset" style="background: #CA8A04" data-color="#CA8A04"></button>
                             <button class="color-preset" style="background: #FFBE0B" data-color="#FFBE0B"></button>
                             <button class="color-preset" style="background: #06B6D4" data-color="#06B6D4"></button>
                             <button class="color-preset" style="background: #FB5607" data-color="#FB5607"></button>
@@ -592,8 +671,9 @@
                     <div class="form-group">
                         <label class="form-label"><span>🌈 Warna Custom</span></label>
                         <div class="color-picker-wrapper">
+                            <!-- Improved Color Input Interaction -->
                             <input type="color" id="customColor" class="color-picker" value="#8ACE00">
-                            <input type="text" id="customColorHex" class="form-input color-input" value="#8ACE00" maxlength="7">
+                            <input type="text" id="customColorHex" class="form-input color-input" value="#8ACE00" placeholder="#RRGGBB" maxlength="7">
                         </div>
                     </div>
                 </div>
@@ -640,9 +720,10 @@
         </div>
     </main>
 
+    <!-- Scripts -->
     <script>
         // ═══════════════════════════════════════════════════════════════
-        // CONFIGURATION & STATE
+        // BRAT GENERATOR LOGIC
         // ═══════════════════════════════════════════════════════════════
         const DIMENSIONS = {
             landscape: { width: 1200, height: 600, ratio: '2/1' },
@@ -659,12 +740,8 @@
             format: 'landscape',
             customFont: null,
             time: 0,
-            // Removed autoPauseAt
         };
 
-        // ═══════════════════════════════════════════════════════════════
-        // ELEMENTS
-        // ═══════════════════════════════════════════════════════════════
         const els = {
             input: document.getElementById('bratText'),
             fontInput: document.getElementById('fontInput'),
@@ -682,27 +759,18 @@
             animToggle: document.getElementById('animToggle'),
             animText: document.getElementById('animText'),
             animIcon: document.getElementById('animIcon'),
-            // Removed replayBtn
             themeBtns: document.querySelectorAll('.theme-btn')
         };
         
         const ctx = els.canvas.getContext('2d');
 
-        // ═══════════════════════════════════════════════════════════════
-        // LOGIC - ANIMATION LOOP
-        // ═══════════════════════════════════════════════════════════════
         function animate() {
             if (!state.animationPaused) {
                 state.time += 0.04; 
             }
-            
             render(state.time);
             requestAnimationFrame(animate);
         }
-
-        // ═══════════════════════════════════════════════════════════════
-        // LOGIC - CORE DRAWING ENGINE
-        // ═══════════════════════════════════════════════════════════════
 
         function updateCanvasDimensions() {
             const dim = DIMENSIONS[state.format];
@@ -711,9 +779,7 @@
             els.wrapper.style.aspectRatio = dim.ratio;
         }
 
-        // Added "disable3D" parameter for straight exports
         function drawContentToContext(targetCtx, width, height, isTransparent = false, time = 0, disable3D = false) {
-            // Clear
             if (isTransparent) {
                 targetCtx.clearRect(0, 0, width, height);
             } else {
@@ -721,7 +787,6 @@
                 targetCtx.fillRect(0, 0, width, height);
             }
 
-            // Calculate 3D Motion offsets (Sine waves) or reset to 0 if disabled
             let offsetY = 0;
             let rotateRad = 0;
             let scale = 1;
@@ -732,20 +797,17 @@
                 scale = 1 + (Math.sin(time * 0.8) * 0.01); 
             }
 
-            // Prepare Text
             const rawText = state.text || 'brat';
             const lines = rawText.split('\n');
             const textColor = isTransparent ? state.color : state.textColor;
             
             targetCtx.save(); 
 
-            // Center transform
             targetCtx.translate(width / 2, height / 2);
             targetCtx.rotate(rotateRad);
             targetCtx.scale(scale, scale);
             targetCtx.translate(-width / 2, -height / 2);
 
-            // Font
             let fontFamily;
             if (state.customFont) {
                 fontFamily = state.customFont;
@@ -753,7 +815,6 @@
                 fontFamily = state.currentTheme === 'classic-brat' ? 'Arial Narrow, Arial Black' : 'Inter';
             }
             
-            // Scaling
             const baseFontSize = 100; 
             targetCtx.font = `900 ${baseFontSize}px ${fontFamily}, sans-serif`;
             
@@ -773,20 +834,16 @@
             const finalFontSize = baseFontSize * finalScale;
             const finalLineHeight = finalFontSize * lineHeightFactor;
 
-            // Apply Font
             targetCtx.font = `900 ${finalFontSize}px ${fontFamily}, sans-serif`;
             targetCtx.textAlign = 'center';
             targetCtx.textBaseline = 'middle';
 
-            // Y Calc
             const totalBlockHeight = lines.length * finalLineHeight;
             let currentY = (height / 2) - (totalBlockHeight / 2) + (finalLineHeight / 2);
             currentY += offsetY;
 
-            // Shadow Logic
             if (!isTransparent) {
                 if (!disable3D) {
-                    // Dynamic 3D Shadow
                     const shadowOffsetX = Math.sin(time) * (width * 0.005);
                     const shadowOffsetY = Math.cos(time) * (width * 0.005) + (width * 0.005);
                     
@@ -795,7 +852,6 @@
                     targetCtx.shadowOffsetX = shadowOffsetX;
                     targetCtx.shadowOffsetY = shadowOffsetY;
                 } else {
-                    // Static Clean Shadow for Download
                     targetCtx.shadowColor = 'rgba(0, 0, 0, 0.15)';
                     targetCtx.shadowBlur = width * 0.015;
                     targetCtx.shadowOffsetX = width * 0.003;
@@ -816,7 +872,6 @@
         }
 
         function render(time = 0) {
-            // Preview selalu allow 3D effects (disable3D = false)
             drawContentToContext(ctx, els.canvas.width, els.canvas.height, false, time, false);
         }
 
@@ -828,7 +883,6 @@
             exportCanvas.height = els.canvas.height;
             const exCtx = exportCanvas.getContext('2d');
             
-            // FORCE STRAIGHT EXPORT: pass time=0 and disable3D=true
             drawContentToContext(exCtx, exportCanvas.width, exportCanvas.height, isTransparent, 0, true);
 
             const link = document.createElement('a');
@@ -837,9 +891,6 @@
             link.click();
         }
 
-        // ═══════════════════════════════════════════════════════════════
-        // HELPER FUNCTIONS
-        // ═══════════════════════════════════════════════════════════════
         function updateTextColor() {
             const rgb = hexToRgb(state.color);
             const brightness = (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
@@ -856,19 +907,33 @@
             state.currentTheme = themeName;
             els.themeBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.theme === themeName));
             updateTextColor();
+            
+            let newColor;
+            if (themeName === 'classic-brat') newColor = '#8ACE00';
+            else if (themeName === 'midnight-glass') newColor = '#334155';
+            else if (themeName === 'sunset-neon') newColor = '#CA8A04';
+            
+            if(newColor) {
+                handleColorChange(newColor, 'theme');
+            }
         }
 
-        function handleColorChange(hex) {
-            state.color = hex;
-            els.colorPicker.value = hex;
-            els.colorHex.value = hex;
-            els.presets.forEach(p => p.classList.remove('active'));
+        function handleColorChange(hex, source = 'external') {
+            let validHex = hex;
+            if (!validHex.startsWith('#')) validHex = '#' + validHex;
+            if (!/^#[0-9A-F]{6}$/i.test(validHex)) return;
+
+            state.color = validHex;
             updateTextColor();
+            
+            if (source !== 'picker') els.colorPicker.value = validHex;
+            if (source !== 'hex') els.colorHex.value = validHex.toUpperCase();
+            
+            els.presets.forEach(p => {
+                p.classList.toggle('active', p.dataset.color.toLowerCase() === validHex.toLowerCase());
+            });
         }
 
-        // ═══════════════════════════════════════════════════════════════
-        // EVENT LISTENERS
-        // ═══════════════════════════════════════════════════════════════
         els.input.addEventListener('input', (e) => { state.text = e.target.value; });
 
         els.formatBtns.forEach(btn => {
@@ -884,12 +949,30 @@
             preset.addEventListener('click', () => {
                 els.presets.forEach(p => p.classList.remove('active'));
                 preset.classList.add('active');
-                handleColorChange(preset.dataset.color);
+                handleColorChange(preset.dataset.color, 'preset');
             });
         });
 
-        els.colorPicker.addEventListener('input', (e) => handleColorChange(e.target.value));
-        els.colorHex.addEventListener('input', (e) => { if (/^#[0-9A-Fa-f]{6}$/.test(e.target.value)) handleColorChange(e.target.value); });
+        els.colorPicker.addEventListener('input', (e) => handleColorChange(e.target.value, 'picker'));
+        
+        els.colorHex.addEventListener('input', (e) => {
+            let val = e.target.value;
+            let testVal = val.startsWith('#') ? val : '#' + val;
+            if (/^#[0-9A-F]{6}$/i.test(testVal)) {
+                handleColorChange(testVal, 'hex');
+            }
+        });
+
+        els.colorHex.addEventListener('blur', (e) => {
+             let val = e.target.value;
+             if (!val.startsWith('#')) val = '#' + val;
+             if (/^#[0-9A-F]{6}$/i.test(val)) {
+                 e.target.value = val.toUpperCase();
+                 handleColorChange(val, 'hex');
+             } else {
+                 e.target.value = state.color.toUpperCase();
+             }
+        });
 
         els.themeBtns.forEach(btn => { btn.addEventListener('click', () => applyTheme(btn.dataset.theme)); });
 
@@ -906,15 +989,11 @@
         els.downloadBtn.addEventListener('click', downloadImage);
 
         els.animToggle.addEventListener('click', () => {
-            // Reset auto-pause jika user manual
-            state.autoPauseAt = null; 
             state.animationPaused = !state.animationPaused;
             els.wrapper.classList.toggle('paused', state.animationPaused);
             els.animIcon.textContent = state.animationPaused ? '▶️' : '⏸️';
             els.animText.textContent = state.animationPaused ? 'Resume' : 'Pause';
         });
-
-        // Removed Replay Event Listener
         
         els.fontInput.addEventListener('change', async (e) => {
             const file = e.target.files[0];
@@ -955,6 +1034,142 @@
         }
 
         init();
+    </script>
+    
+    <!-- WATERMARK SCRIPT (IIFE) -->
+    <script>
+        (function() {
+            function initializeWatermark() {
+                const watermarkHTML = `
+                  <div id="futuristic-watermark" title="Design by ©URANUSFAZRY">
+                    <canvas id="particle-canvas"></canvas>
+                    <div class="f-content-wrapper">
+                      <div id="f-main-content" class="f-content">
+                        <div class="f-logo-container">
+                          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M20 20 L80 20 L80 80 L20 80 Z" stroke-opacity="0.5"/>
+                              <path d="M50 5 L95 50 L50 95 L5 50 Z"/>
+                          </svg>
+                        </div>
+                        <span id="f-watermark-text">©URANUSFAZRY</span>
+                      </div>
+                      <div id="f-follow-content" class="f-content hidden">
+                          <span id="f-follow-message"></span>
+                      </div>
+                    </div>
+                  </div>
+                `;
+                document.body.insertAdjacentHTML('beforeend', watermarkHTML);
+
+                const watermarkEl = document.getElementById('futuristic-watermark');
+                const textEl = document.getElementById('f-watermark-text');
+                const logoEl = watermarkEl.querySelector('.f-logo-container');
+                const mainContentEl = document.getElementById('f-main-content');
+                const followContentEl = document.getElementById('f-follow-content');
+                const followMessageEl = document.getElementById('f-follow-message');
+                
+                let isAnimating = false;
+                let autoPlayInterval = null;
+                let currentSequence = 0;
+                const sequenceActions = ['scramble', 'logo', 'youtube', 'tiktok', 'reset'];
+
+                const canvas = document.getElementById('particle-canvas');
+                const ctx = canvas.getContext('2d');
+                let particles = [];
+                const resizeCanvas = () => { if (watermarkEl) { canvas.width = watermarkEl.offsetWidth; canvas.height = watermarkEl.offsetHeight; } };
+                class Particle {
+                    constructor() { this.reset(); this.baseSpeedX = (Math.random() - 0.5) * 0.5; this.baseSpeedY = (Math.random() - 0.5) * 0.5; this.speedX = this.baseSpeedX; this.speedY = this.baseSpeedY; }
+                    update() {
+                        this.x += this.speedX; this.y += this.speedY; this.opacity -= this.fadeSpeed;
+                        if (this.opacity <= 0 || this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) { this.reset(); }
+                    }
+                    draw() {
+                        const style = getComputedStyle(watermarkEl);
+                        const hue = style.getPropertyValue('--wm-particle-hue').trim();
+                        const lightness = parseFloat(style.getPropertyValue('--wm-particle-lightness').trim());
+                        ctx.globalAlpha = this.opacity;
+                        ctx.fillStyle = `hsl(${hue}, 100%, ${lightness + this.opacity * 40}%)`;
+                        ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+                    }
+                    reset() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.opacity = Math.random() * 0.5 + 0.2; this.size = Math.random() * 1.5 + 0.5; this.fadeSpeed = Math.random() * 0.015 + 0.005; }
+                }
+                const animateParticles = () => { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); ctx.globalAlpha = 1.0; requestAnimationFrame(animateParticles); };
+                
+                const textScramble = (el) => {
+                    const originalText = "©URANUSFAZRY";
+                    const chars = '!<>*#{}[]'; let frame = 0; isAnimating = true;
+                    const interval = setInterval(() => {
+                        el.innerText = originalText.split('').map((char, i) => { const p = (frame - i * 2) / 15; if (p < 0) return ' '; if (p > 1) return char; return chars[Math.floor(Math.random() * chars.length)]; }).join('');
+                        if (frame >= originalText.length * 2 + 15) { clearInterval(interval); el.innerText = originalText; isAnimating = false; } frame++;
+                    }, 30);
+                };
+
+                const typewriter = (el, text) => {
+                    let i = 0; el.innerHTML = ""; isAnimating = true;
+                    const interval = setInterval(() => {
+                        if (i < text.length) { el.innerHTML += text.charAt(i); i++; } 
+                        else { clearInterval(interval); isAnimating = false; }
+                    }, 50);
+                };
+
+                const runAutoSequence = () => {
+                    if (isAnimating) return;
+                    const action = sequenceActions[currentSequence];
+                    switch (action) {
+                        case 'scramble': textScramble(textEl); break;
+                        case 'logo':
+                            isAnimating = true;
+                            logoEl.classList.add('reacting');
+                            logoEl.addEventListener('animationend', () => { logoEl.classList.remove('reacting'); isAnimating = false; }, { once: true });
+                            break;
+                        case 'youtube':
+                            isAnimating = true;
+                            mainContentEl.classList.add('hidden');
+                            setTimeout(() => {
+                                followContentEl.classList.remove('hidden');
+                                typewriter(followMessageEl, "Follow uranusfazry YouTube");
+                            }, 400);
+                            break;
+                        case 'tiktok': 
+                            typewriter(followMessageEl, "Follow uranusfazry TikTok"); 
+                            break;
+                        case 'reset':
+                            isAnimating = true;
+                            followContentEl.classList.add('hidden');
+                            setTimeout(() => {
+                                mainContentEl.classList.remove('hidden');
+                                isAnimating = false;
+                            }, 400);
+                            break;
+                    }
+                    currentSequence = (currentSequence + 1) % sequenceActions.length;
+                };
+
+                const startAutoPlay = () => {
+                    if (autoPlayInterval) clearInterval(autoPlayInterval);
+                    runAutoSequence();
+                    autoPlayInterval = setInterval(runAutoSequence, 3500);
+                };
+
+                // Removed manual toggle to avoid conflict with main themes
+                // watermarkEl.addEventListener('click', () => { watermarkEl.classList.toggle('light-mode'); });
+                
+                const init = () => {
+                    resizeCanvas();
+                    for (let i = 0; i < 40; i++) particles.push(new Particle());
+                    animateParticles();
+                    window.addEventListener('resize', resizeCanvas);
+                    startAutoPlay();
+                };
+                init();
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initializeWatermark);
+            } else {
+                initializeWatermark();
+            }
+        })();
     </script>
 </body>
 </html>
